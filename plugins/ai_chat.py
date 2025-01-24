@@ -23,7 +23,7 @@ async def startcmd(client: Client, message: Message):
     if FSUB and not await get_fsub(client, message):return
     await message.reply_photo(# type:ignore
         photo="https://telegra.ph/file/595e38a4d76848c01b110.jpg",
-        caption=f"<b>Jai Shree Krishna {userMention},\n\nIᴍ Hᴇʀᴇ Tᴏ Rᴇᴅᴜᴄᴇ Yᴏᴜʀ Pʀᴏʙʟᴇᴍs..\nYᴏᴜ Cᴀɴ Usᴇ Mᴇ As ʏᴏᴜʀ Pʀɪᴠᴀᴛᴇ Assɪsᴛᴀɴᴛ..\nAsᴋ Mᴇ Aɴʏᴛʜɪɴɢ...Dɪʀᴇᴄᴛʟʏ..\n\nMʏ Cʀᴇᴀᴛᴏʀ : <a href=https://t.me/biisal>Bɪɪsᴀʟ</a>\nMʏ Lᴏᴠᴇʀ : <a href=tg://settings/>Tʜɪs Pᴇʀsᴏɴ</a></b>",
+        caption=f"<b>Opa {userMention},\n\nEu poderei te ajudar de seguintes formas..\nUsando-se atráves do privado..\nAsᴋ Mᴇ Aɴʏᴛʜɪɴɢ...Dɪʀᴇᴄᴛʟʏ..\n\nMʏ Cʀᴇᴀᴛᴏʀ : <a href=https://t.me/lndescritivel>Zzz</a>\nMʏ Lᴏᴠᴇʀ : <a href=tg://settings/>Tʜɪs Pᴇʀsᴏɴ</a></b>",
     ) 
     return
 
@@ -45,12 +45,12 @@ async def broadcasting_func(client : Client, message: Message):
         if not user_id:
             continue
         try:
-            await to_copy_msg.copy(user_id , reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🎭 ᴀᴅᴍɪɴ sᴜᴘᴘᴏʀᴛ 🎗️", url='https://t.me/bisal_files_talk')]]))
+            await to_copy_msg.copy(user_id , reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🎭 ᴀᴅᴍɪɴ sᴜᴘᴘᴏʀᴛ 🎗️", url='https://t.me/lndescritivel')]]))
             completed += 1
         except FloodWait as e:
             if isinstance(e.value , int | float):
                 await asyncio.sleep(e.value)
-                await to_copy_msg.copy(user_id , reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🎭 ᴀᴅᴍɪɴ sᴜᴘᴘᴏʀᴛ 🎗️", url='https://t.me/bisal_files_talk')]]))
+                await to_copy_msg.copy(user_id , reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🎭 ᴀᴅᴍɪɴ sᴜᴘᴘᴏʀᴛ 🎗️", url='https://t.me/lndescritivel')]]))
                 completed += 1
         except Exception as e:
             print("Error in broadcasting:", e) 
@@ -66,7 +66,7 @@ async def grp_ai(client: Client, message: Message):
     )
     if not query:
         return await message.reply_text( # type:ignore
-            "<b>Abe gadhe /ai k baad kuch likh to le !!.\n\nExample Use:\n<code>/ai Who is lord krshna??</code>\n\nHope you got it.Try it now..</b>"
+            "<b>Abe gadhe /ai e ae pai !!.\n\nExemplo Use:\n<code>/ai 7x5??</code>\n\nHope you got it.Try it now..</b>"
         )
     if FSUB and not await get_fsub(client, message):return
     message.text = query # type:ignore
