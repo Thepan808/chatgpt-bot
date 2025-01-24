@@ -14,7 +14,7 @@ MONGO_URL = environ.get("MONGO_URL" , "mongodb+srv://thepanda:thepanda@cluster0.
 AUTH_CHANNEL = int(
     environ.get("AUTH_CHANNEL", "-1001509201180")
 )
-FSUB = environ.get("FSUB", True)
+FSUB = environ.get("FSUB", False)
 STICKERS_IDS = (
     "CAACAgQAAxkBAAEK99dlfC7LDqnuwtGRkIoacot_dGC4zQACbg8AAuHqsVDaMQeY6CcRojME"
 ).split()
