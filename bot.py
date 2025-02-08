@@ -1,7 +1,7 @@
-# ©️biisal jai shree krishna 😎
 from pyrogram.client import Client
 from pyrogram.handlers import InlineQueryHandler
 from info import *
+from plugins.ai_chat import inline_query_handler  # Add this import
 
 class Bot(Client):
     def __init__(self):
