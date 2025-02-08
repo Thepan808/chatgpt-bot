@@ -3,8 +3,9 @@ import asyncio
 import random
 from pyrogram import filters
 from pyrogram.client import Client
-from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton 
+from pyrogram.types import Message, InlineQuery, InlineQueryResultArticle, InputTextMessageContent, InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram.errors import FloodWait
+from uuid import uuid4
 from info import *
 from plugins.utils import create_image, get_ai_response 
 from .db import *
@@ -22,7 +23,7 @@ async def startcmd(client: Client, message: Message):
     if FSUB and not await get_fsub(client, message):return
     await message.reply_photo(# type:ignore
         photo="https://telegra.ph/file/595e38a4d76848c01b110.jpg",
-        caption=f"<b>Opa {userMention},\n\nEu poderei te ajudar de seguintes formas..\nUsando-se através do privado..\nPergunte-me qualquer coisa...Diretamente..\n\nMeu Criador: <a href='some_link'>Link</a></b>"
+        caption=f"<b>Opa {userMention},\n\nEu poderei te ajudar de seguintes formas..\nUsando-se através do privado..\nPergunte-me qualquer coisa...Diretamente..\n\nMeu Criador: <a href='some_link'></a></b>"
     ) 
     return
 
@@ -142,3 +143,25 @@ async def ai_res(client: Client, message: Message ):
     finally:
         if sticker:
             await sticker.delete()
+
+@Client.on_inline_query()  # type:ignore
+async def inline_query_handler(client: Client, query: InlineQuery):
+    query_text = query.query.strip()
+    if not query_text:
+        return
+
+    # Processar a query_text para obter a resposta (usando a lógica existente do ai_res)
+    response = await get_ai_response([{"role": "user", "content": query_text}])
+
+    # Criar um resultado de consulta inline
+    results = [
+        InlineQueryResultArticle(
+            id=str(uuid4()),
+            title="Resposta da IA",
+            input_message_content=InputTextMessageContent(message_text=response),
+            description="Clique para enviar a resposta da IA"
+        )
+    ]
+
+    # Responder à consulta inline
+    await query.answer(results)
