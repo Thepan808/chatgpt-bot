@@ -146,7 +146,27 @@ async def ai_res(client: Client, message: Message ):
 
 @Client.on_inline_query()  # type:ignore
 async def inline_query_handler(client: Client, query: InlineQuery):
+    user_data = await users.get_or_add_user(query.from_user.id, query.from_user.first_name)
     query_text = query.query.strip()
+    
+    if user_data and user_data.get("waiting_for_input"):
+        user_data["waiting_for_input"] = False
+        await users.update_user(query.from_user.id, user_data)
+    else:
+        await query.answer(
+            results=[
+                InlineQueryResultArticle(
+                    id=str(uuid4()),
+                    title="Aguardando sua entrada",
+                    input_message_content=InputTextMessageContent(message_text="Aguardando sua próxima mensagem para responder.")
+                )
+            ],
+            cache_time=0
+        )
+        user_data["waiting_for_input"] = True
+        await users.update_user(query.from_user.id, user_data)
+        return
+
     if not query_text:
         return
 
