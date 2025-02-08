@@ -14,8 +14,8 @@ from .fsub import get_fsub
 
 translator = Translator()
 
-def traduzir_para_portugues(texto):
-    return translator.translate(texto, dest='pt').text
+async def traduzir_para_portugues(texto):
+    return (await translator.translate(texto, dest='pt')).text
 
 @Client.on_message(filters.command("start") & filters.incoming) # type:ignore
 async def startcmd(client: Client, message: Message):
@@ -140,7 +140,7 @@ async def ai_res(client: Client, message: Message):
         history = await chat_history.get_history(user_id)
         history.append({"role": "user", "content": text})
         reply = await get_ai_response(history)
-        reply = traduzir_para_portugues(reply)
+        reply = await traduzir_para_portugues(reply)
         history.append({"role": "assistant", "content": reply})
         await message.reply_text(reply) # type:ignore
         await chat_history.add_history(user_id, history)
@@ -179,7 +179,7 @@ async def inline_query_handler(client: Client, query: InlineQuery):
 
     # Processar a query_text para obter a resposta (usando a lógica existente do ai_res)
     response = await get_ai_response([{"role": "user", "content": query_text}])
-    response = traduzir_para_portugues(response)
+    response = await traduzir_para_portugues(response)
 
     # Criar um resultado de consulta inline
     results = [
