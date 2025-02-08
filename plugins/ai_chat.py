@@ -10,7 +10,6 @@ from plugins.utils import create_image, get_ai_response
 from .db import *
 from .fsub import get_fsub
 
-
 @Client.on_message(filters.command("start") & filters.incoming) # type:ignore
 async def startcmd(client: Client, message: Message):
     userMention = message.from_user.mention()
@@ -18,46 +17,44 @@ async def startcmd(client: Client, message: Message):
         await users.addUser(message.from_user.id, message.from_user.first_name)
         await client.send_message(
             LOG_CHANNEL,
-            text=f"#New_user_started\n\nUser: {message.from_user.mention()}\nid :{message.from_user.id}",
+            text=f"#Novo_usuario_iniciou\n\nUsuário: {message.from_user.mention()}\nid :{message.from_user.id}",
         )
     if FSUB and not await get_fsub(client, message):return
     await message.reply_photo(# type:ignore
         photo="https://telegra.ph/file/595e38a4d76848c01b110.jpg",
-        caption=f"<b>Opa {userMention},\n\nEu poderei te ajudar de seguintes formas..\nUsando-se atráves do privado..\nAsᴋ Mᴇ Aɴʏᴛʜɪɴɢ...Dɪʀᴇᴄᴛʟʏ..\n\nMʏ Cʀᴇᴀᴛᴏʀ : <a href=https://t.me/lndescritivel>Zzz</a>\nMʏ Channel : <a href=t.me/Traps1>Tʜɪs Pᴇʀsᴏɴ</a></b>",
+        caption=f"<b>Opa {userMention},\n\nEu poderei te ajudar de seguintes formas..\nUsando-se atráves do privado..\nPergunte-me qualquer coisa...Diretamente..\n\nMeu Criador : <a[...]
     ) 
     return
 
-
 @Client.on_message(filters.command("broadcast") & (filters.private) & filters.user(ADMIN)) # type:ignore
 async def broadcasting_func(client : Client, message: Message):
-    msg = await message.reply_text("Wait a second!") # type:ignore
+    msg = await message.reply_text("Espere um segundo!") # type:ignore
     if not message.reply_to_message:
-        return await msg.edit("<b>Please reply to a message to broadcast.</b>")
-    await msg.edit("Processing ...")
+        return await msg.edit("<b>Por favor, responda a uma mensagem para transmitir.</b>")
+    await msg.edit("Processando ...")
     completed = 0
     failed = 0
     to_copy_msg = message.reply_to_message
     users_list = await users.get_all_users()
     for i , userDoc in enumerate(users_list):
         if i % 20 == 0:
-            await msg.edit(f"Total : {i} \nCompleted : {completed} \nFailed : {failed}")
+            await msg.edit(f"Total: {i} \nConcluído: {completed} \nFalhou: {failed}")
         user_id = userDoc.get("user_id")
         if not user_id:
             continue
         try:
-            await to_copy_msg.copy(user_id , reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🎭 ᴀᴅᴍɪɴ sᴜᴘᴘᴏʀᴛ 🎗️", url='https://t.me/lndescritivel')]]))
+            await to_copy_msg.copy(user_id , reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🎭 Suporte Admin 🎗️", url='https://t.me/lndescritivel')]]))
             completed += 1
         except FloodWait as e:
             if isinstance(e.value , int | float):
                 await asyncio.sleep(e.value)
-                await to_copy_msg.copy(user_id , reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🎭 ᴀᴅᴍɪɴ sᴜᴘᴘᴏʀᴛ 🎗️", url='https://t.me/lndescritivel')]]))
+                await to_copy_msg.copy(user_id , reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🎭 Suporte Admin 🎗️", url='https://t.me/lndescritivel')]]))
                 completed += 1
         except Exception as e:
-            print("Error in broadcasting:", e) 
+            print("Erro na transmissão:", e) 
             failed += 1
             pass
-    await msg.edit(f"Successfully Broadcasted\nTotal : {len(users_list)} \nCompleted : {completed} \nFailed : {failed}")
-    
+    await msg.edit(f"Transmissão bem-sucedida\nTotal: {len(users_list)} \nConcluído: {completed} \nFalhou: {failed}")
 
 @Client.on_message(filters.command("ai") & filters.chat(CHAT_GROUP)) # type:ignore
 async def grp_ai(client: Client, message: Message):
@@ -66,12 +63,11 @@ async def grp_ai(client: Client, message: Message):
     )
     if not query:
         return await message.reply_text( # type:ignore
-            "<b>Abe gadhe /ai e ae pai !!.\n\nExemplo Use:\n<code>/ai 7x5??</code>\n\nHope you got it.Try it now..</b>"
+            "<b>Abe gadhe /ai e ae pai !!.\n\nExemplo de uso:\n<code>/ai 7x5??</code>\n\nEspero que tenha entendido. Tente agora..</b>"
         )
     if FSUB and not await get_fsub(client, message):return
     message.text = query # type:ignore
     return await ai_res(client, message)
-
 
 @Client.on_message(filters.command("reset") &  filters.private) # type:ignore
 async def reset(client: Client, message: Message):
@@ -80,21 +76,20 @@ async def reset(client: Client, message: Message):
         if FSUB and not await get_fsub(client, message):return
         is_reset = await chat_history.reset_history(message.from_user.id)
         if not is_reset:
-            return await message.reply_text("Unable to reset chat history.") # type:ignore
-        await message.reply_text("<b>Chat history has been reset.</b>") # type:ignore
+            return await message.reply_text("Não foi possível redefinir o histórico de chat.") # type:ignore
+        await message.reply_text("<b>O histórico de chat foi redefinido.</b>") # type:ignore
     except Exception as e:
-        print("Error in reset: ", e)
-        return await message.reply_text("Sorry, Failed to reset chat history.") # type:ignore
-
+        print("Erro na redefinição: ", e)
+        return await message.reply_text("Desculpe, falha ao redefinir o histórico de chat.") # type:ignore
 
 @Client.on_message(filters.command("gen") & filters.private)  # type:ignore
 async def gen_image(client: Client, message: Message):
     """
-    Handles private messages with the /gen command and generates an image based on the provided prompt.
+    Lida com mensagens privadas com o comando /gen e gera uma imagem com base no prompt fornecido.
     
     Args:
-        client (Client): The Client object.
-        message (Message): The Message object.
+        client (Client): O objeto Client.
+        message (Message): O objeto Message.
 
     Returns:
         None
@@ -107,22 +102,22 @@ async def gen_image(client: Client, message: Message):
         prompt = message.text.replace("/gen", "").strip()
         encoded_prompt = prompt.replace("\n", " ")
         if not prompt:
-            return await message.reply_text("Please provide a prompt.") # type:ignore
+            return await message.reply_text("Por favor, forneça um prompt.") # type:ignore
         image_file = await create_image(encoded_prompt)
         if not image_file:
-            return await message.reply_text("Failed to generate image.") # type:ignore
-        await message.reply_photo(photo=image_file , caption=f"Generated Image for prompt: {prompt[:150]}...") # type:ignore
+            return await message.reply_text("Falha ao gerar a imagem.") # type:ignore
+        await message.reply_photo(photo=image_file , caption=f"Imagem gerada para o prompt: {prompt[:150]}...") # type:ignore
         image_file.close()
     except Exception as e:
-        print("Error in gen_image: ", e)
-        return await message.reply_text("Sorry, I am not Available right now.") # type:ignore
+        print("Erro ao gerar imagem: ", e)
+        return await message.reply_text("Desculpe, não estou disponível no momento.") # type:ignore
     finally:
         if sticker:await sticker.delete()
 
 @Client.on_message(filters.text & filters.incoming & filters.private) # type:ignore
 async def ai_res(client: Client, message: Message ):
     """
-    Handles private text messages and sends AI responses back.
+    Lida com mensagens de texto privadas e envia respostas de IA de volta.
     """
     sticker = None
     reply = None
@@ -141,8 +136,8 @@ async def ai_res(client: Client, message: Message ):
         await message.reply_text(reply) # type:ignore
         await chat_history.add_history(user_id, history)
     except Exception as e:
-        print("Error in ai_res: ", e)
-        reply = "Sorry, I am not available right now."
+        print("Erro na resposta de IA: ", e)
+        reply = "Desculpe, não estou disponível no momento."
         await message.reply_text(reply) # type:ignore
     finally:
         if sticker:
