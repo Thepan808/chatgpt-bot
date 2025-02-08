@@ -29,11 +29,20 @@ async def startcmd(client: Client, message: Message):
             text=f"#Novo_usuario_iniciou\n\nUsuário: {message.from_user.mention()}\nid :{message.from_user.id}",
         )
     if FSUB and not await get_fsub(client, message): return
-    await message.reply_photo( # type:ignore
-        photo="https://telegra.ph/file/595e38a4d76848c01b110.jpg",
-        caption=f"Opa {userMention},\n\nEu sou um bot de IA. Pergunte-me qualquer coisa.",
+    await message.reply( # type:ignore
+        text=f"Opa {userMention},\n\nEu sou um bot de IA. Pergunte-me qualquer coisa.\n\n"
+             "Aqui está um resumo dos comandos disponíveis:\n"
+             "- /ai <texto>: Pergunte qualquer coisa para a IA.\n"
+             "- /gen <prompt>: Gere uma imagem com base no prompt fornecido.\n"
+             "- /reset: Redefina o histórico de chat.\n"
+             "\nClique no botão abaixo para ver todos os comandos e suas funções.",
+        reply_markup=InlineKeyboardMarkup(
+            [
+                [InlineKeyboardButton("DEV", url="https://t.me/lndescritivel")]
+            ]
+        ),
         parse_mode="HTML"
-    ) 
+    )
     return
 
 @Client.on_message(filters.command("broadcast") & (filters.private) & filters.user(ADMIN)) # type:ignore
