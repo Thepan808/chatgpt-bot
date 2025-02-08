@@ -1,7 +1,7 @@
 # ©️biisal jai shree krishna 😎
 from pyrogram.client import Client
+from pyrogram.handlers import InlineQueryHandler
 from info import *
-
 
 class Bot(Client):
     def __init__(self):
@@ -14,12 +14,14 @@ class Bot(Client):
             plugins={"root": "plugins"},
             sleep_threshold=15,
         )
+        self.add_handler(InlineQueryHandler(inline_query_handler))
 
     async def start(self): # type:ignore
         await super().start()
         me = await self.get_me()
         print(f"{me.first_name} Iꜱ Sᴛᴀʀᴛᴇᴅ.....✨️")
         await self.send_message(ADMIN, f"**__{me.first_name}  Iꜱ Sᴛᴀʀᴛᴇᴅ.....✨️__**")
+
     async def stop(self, *args): # type:ignore
         await super().stop()
         print("Bᴏᴛ Iꜱ Sᴛᴏᴘᴘᴇᴅ....")
