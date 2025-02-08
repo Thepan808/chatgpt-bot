@@ -7,6 +7,8 @@ from pyrogram.types import Message, InlineQuery, InlineQueryResultArticle, Input
 from pyrogram.errors import FloodWait
 from uuid import uuid4
 from googletrans import Translator
+import requests
+from requests.exceptions import HTTPError
 from info import *
 from plugins.utils import create_image, get_ai_response 
 from .db import *
@@ -111,11 +113,16 @@ async def gen_image(client: Client, message: Message):
         encoded_prompt = prompt.replace("\n", " ")
         if not prompt:
             return await message.reply_text("Por favor, forneça um prompt.") # type:ignore
-        image_file = await create_image(encoded_prompt)
-        if not image_file:
-            return await message.reply_text("Falha ao gerar a imagem.") # type:ignore
-        await message.reply_photo(photo=image_file, caption=f"Imagem gerada para o prompt: {prompt[:150]}...") # type:ignore
-        image_file.close()
+        try:
+            image_file = await create_image(encoded_prompt)
+            if not image_file:
+                return await message.reply_text("Falha ao gerar a imagem.") # type:ignore
+            await message.reply_photo(photo=image_file, caption=f"Imagem gerada para o prompt: {prompt[:150]}...") # type:ignore
+            image_file.close()
+        except HTTPError as http_err:
+            await message.reply_text(f"HTTP error occurred: {http_err}")
+        except Exception as err:
+            await message.reply_text(f"Other error occurred: {err}")
     except Exception as e:
         print("Erro ao gerar imagem: ", e)
         return await message.reply_text("Desculpe, não estou disponível no momento.") # type:ignore
