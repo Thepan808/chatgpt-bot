@@ -25,7 +25,7 @@ async def get_fsub(bot : Client, message: Message ) -> bool:
         join_button = InlineKeyboardButton("Entrar no Canal", url=channel_link) # type:ignore
         keyboard : List[List[InlineKeyboardButton | InlineKeyboardButtonBuy]] = [[join_button]]
         await message.reply( # type:ignore
-            f"<b>Caro usuário {message.from_user.mention}!\n\nPor favor, entre no nosso canal de atualizações para me usar! 😊\n\nDevido ao servidor[...]
+            f"<b>Caro usuário {message.from_user.mention}!\n\nPor favor, entre no nosso canal de atualizações para me usar! 😊\n\nDevido ao servidor...</b>",
             reply_markup=InlineKeyboardMarkup(keyboard),
         )
         return False
