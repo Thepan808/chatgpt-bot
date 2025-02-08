@@ -5,7 +5,6 @@ from motor import motor_asyncio
 client: motor_asyncio.AsyncIOMotorClient[Any] = motor_asyncio.AsyncIOMotorClient(MONGO_URL)
 db = client["biisal"]
 
-
 class User:
     def __init__(self):
         """
@@ -34,13 +33,31 @@ class User:
             dict[str, Any] | None: A dictionary representing the user if added successfully, otherwise None.
         """
         try:
-            user: dict[str, Any] = {"user_id": user_id, "name": name}
+            user: dict[str, Any] = {"user_id": user_id, "name": name, "waiting_for_input": False}
             await self.users.insert_one(user)
             self.cache[user_id] = user      
             return user
         except Exception as e:
             print("Error in addUser: ", e)
-            
+
+    async def update_user(self, user_id: int, user_data: dict[str, Any]) -> bool:
+        """
+        Update user data in the database.
+
+        Args:
+            user_id (int): The unique identifier for the user.
+            user_data (dict[str, Any]): The updated user data.
+
+        Returns:
+            bool: True if the user was updated successfully, False otherwise.
+        """
+        try:
+            await self.users.update_one({"user_id": user_id}, {"$set": user_data})
+            self.cache[user_id] = user_data
+            return True
+        except Exception as e:
+            print("Error in updateUser: ", e)
+            return False
 
     async def get_user(self, user_id: int) -> dict[str, Any] | None:
         """
@@ -62,7 +79,6 @@ class User:
             return None
 
     async def remove_user(self, user_id: int) -> bool:
-        
         """
         Removes a user from the database.
 
@@ -79,22 +95,23 @@ class User:
         except Exception as e:
             print("Error in removeUser: ", e)
             return False
-    async def get_or_add_user(self, user_id: int, name: str) -> dict[str ,str] | None:
+
+    async def get_or_add_user(self, user_id: int, name: str) -> dict[str, str] | None:
         """
         Retrieves a user from the database or adds the user if they do not exist.
-        
+
         Args:
             user_id (int): The unique identifier for the user.
             name (str): The name of the user.
-            
+
         Returns:
             dict[str, str] | None: A dictionary representing the user if found or added successfully, otherwise None.
         """
-        user : dict[str ,str] | None = await self.get_user(user_id)
-        if user is None :
+        user: dict[str, str] | None = await self.get_user(user_id)
+        if user is None:
             user = await self.addUser(user_id, name)
         return user
-    
+
     async def get_all_users(self) -> list[dict[str, Any]]:
         """
         Retrieves a list of all users stored in the database.
@@ -103,14 +120,13 @@ class User:
             list[dict[str, Any]]: A list of dictionaries representing all users in the database.
         """
         try:
-            users : list[dict[str, Any]] = []
+            users: list[dict[str, Any]] = []
             async for user in self.users.find():
                 users.append(user)
             return users
         except Exception as e:
             print("Error in getAllUsers: ", e)
             return []
-
 
 class ChatHistory:
     def __init__(self):
@@ -129,7 +145,7 @@ class ChatHistory:
             bool: True if successful, False otherwise.
         """
         try:
-            recent_history = history[-50:] # increesing this will create a api error
+            recent_history = history[-50:] # increasing this will create an API error
             query = {"user_id": user_id}
             update = {"$set": {"history": recent_history}}
             await self.history.update_one(query, update, upsert=True)
@@ -137,7 +153,6 @@ class ChatHistory:
         except Exception as e:
             print("Error in addHistory: ", e)
             return False
-
 
     async def get_history(self, user_id: int) -> list[dict[str, str]]:        
         """
@@ -150,14 +165,13 @@ class ChatHistory:
             list[dict[str, str]]: A list of dictionaries representing the user's chat history. 
             Each dictionary contains 'role' and 'content' keys. Returns an empty list if no history is found or an error occurs.
         """
-
         try:
             history : dict[str , Any] | None = await self.history.find_one({"user_id": user_id})
             return history["history"] if history else []
         except Exception as e:
             print("Error in getHistory: ", e)
             return []
-    
+
     async def reset_history(self, user_id: int) -> bool:
         """
         Deletes all chat history of a user.
@@ -174,7 +188,6 @@ class ChatHistory:
         except Exception as e:
             print("Error in clearHistory: ", e)
             return False
-
 
 chat_history = ChatHistory()
 users = User()
