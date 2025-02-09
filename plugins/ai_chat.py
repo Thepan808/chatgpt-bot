@@ -35,7 +35,7 @@ async def startcmd(client: Client, message: Message):
              "- /ai <texto>: Pergunte qualquer coisa para a IA.\n"
              "- /gen <prompt>: Gere uma imagem com base no prompt fornecido.\n"
              "- /reset: Redefina o histórico de chat.\n"
-             "\nClique no botão abaixo para ver todos os comandos e suas funções.",
+             "\nAproveite bem, que eu possa ser útil para você.",
         reply_markup=InlineKeyboardMarkup(
             [
                 [InlineKeyboardButton("DEV", url="https://t.me/lndescritivel")]
