@@ -40,8 +40,7 @@ async def startcmd(client: Client, message: Message):
             [
                 [InlineKeyboardButton("DEV", url="https://t.me/lndescritivel")]
             ]
-        ),
-        parse_mode="HTML"
+        )
     )
     return
 
